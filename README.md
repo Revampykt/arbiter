@@ -1,2 +1,5 @@
 # arbiter
-Arbiter for programming contests
+Арбитр для олимпиад по программированию.
+
+Для совместимости с Windows XP целевой платформой является 32-битная версия .Net Framework 4.0
+
