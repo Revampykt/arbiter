@@ -14,13 +14,16 @@ namespace Arbiter
             if (args.Length > 0)
                 WorkingDirectory = args[0];
 
-            Debug.Initialization();
 
             if (WorkingDirectory == "")
             {
-                Debug.LogWarning("Не указана рабочая директория.");
                 WorkingDirectory = System.IO.Directory.GetCurrentDirectory();
-                //return;
+                Debug.Initialization();
+                Debug.LogWarning("Не указана рабочая директория.");
+            }
+            else
+            {
+                Debug.Initialization();
             }
 
             Console.CancelKeyPress += Console_CancelKeyPress;

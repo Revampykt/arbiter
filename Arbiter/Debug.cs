@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace Arbiter
 {
@@ -7,7 +8,7 @@ namespace Arbiter
     {
         private static Debug instance;
 
-        private FileStream fileStream;
+        private string logFilePath;
 
         public static void Initialization()
         {
@@ -20,27 +21,37 @@ namespace Arbiter
                 Directory.CreateDirectory(path);
             }
 
-            string fileName = Path.Combine(path, $"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day} {DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}.log");
+            instance.logFilePath = Path.Combine(path, $"{DateTime.Now.ToString("yyyy'-'MM'-'dd")}.log");
 
-            instance.fileStream = File.Create(fileName);
+            if (!File.Exists(instance.logFilePath))
+            {
+                File.Create(instance.logFilePath).Close();
+            }
         }
 
         public static void Log(string message)
         {
-            Console.WriteLine(message);
-
+            instance.Write($"[{DateTime.Now.ToString("HH':'mm':'ss")}] [LOG] {message}");
         }
 
         public static void LogError(string message)
         {
-            Console.WriteLine(message);
-
+            instance.Write($"[{DateTime.Now.ToString("HH':'mm':'ss")}] [ERROR] {message}");
         }
 
         public static void LogWarning(string message)
         {
-            Console.WriteLine(message);
+            instance.Write($"[{DateTime.Now.ToString("HH':'mm':'ss")}] [WARNING] {message}");
+        }
 
+        private void Write(string text)
+        {
+            Console.WriteLine(text);
+
+            lock (instance)
+            {
+                File.AppendAllText(logFilePath, text + Environment.NewLine, Encoding.UTF8);
+            }
         }
     }
 }
