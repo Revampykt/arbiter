@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 
 namespace Arbiter
@@ -14,26 +15,38 @@ namespace Arbiter
             if (args.Length > 0)
                 WorkingDirectory = args[0];
 
+            foreach (var a in args)
+                Console.WriteLine(a);
 
-            if (WorkingDirectory == "")
+            if (string.IsNullOrEmpty(WorkingDirectory))
             {
-                WorkingDirectory = System.IO.Directory.GetCurrentDirectory();
-                Debug.Initialization();
-                Debug.LogWarning("Не указана рабочая директория.");
+                WorkingDirectory = Path.Combine(Directory.GetCurrentDirectory(), "WorkingDirectory");
+                Logger.Initialization();
+                Logger.Warning("Не указана рабочая директория");
             }
             else
             {
-                Debug.Initialization();
+                Logger.Initialization();
             }
+
+            Logger.Log("Арбитр запущен");
 
             Console.CancelKeyPress += Console_CancelKeyPress;
 
-            int k = 0;
+            Arbiter arbiter = new Arbiter();
 
             while (!IsCancelled)
             {
-                Debug.Log(k++.ToString());
-                Thread.Sleep(500);
+                try
+                {
+                    arbiter.Update();
+                    if (arbiter.sleep)
+                        Thread.Sleep(1000);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message);
+                }
             }
         }
 
@@ -41,6 +54,7 @@ namespace Arbiter
         {
             if (e.SpecialKey == ConsoleSpecialKey.ControlC)
             {
+                Logger.Log("Арбитр остановлен пользователем");
                 IsCancelled = true;
                 e.Cancel = true;
             }
