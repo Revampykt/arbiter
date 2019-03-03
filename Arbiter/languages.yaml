@@ -2,3 +2,7 @@ gcc:
   compilation: "g++ %c.cpp -o %c.exe"
   execution: "%c.exe input.txt output.txt"
   name: "GNU Compiler Collection C++"
+csc:
+  compilation: "csc -out:%c.exe %c.cs"
+  execution: "%c.exe input.txt output.txt"
+  name: "Microsoft Visual C# Compiler"
