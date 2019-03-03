@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Arbiter
 {
@@ -7,17 +11,39 @@ namespace Arbiter
     /// </summary>
     public class Arbiter
     {
-        private readonly string LanguagesPath;
-        private readonly string QueuePath;
-        private readonly string ResultsPath;
-
         public bool sleep;
+
+        public static IDeserializer Deserializer;
+
+        private string LanguagesPath;
+        private string LanguagesFilePath;
+        private string QueuePath;
+        private string ResultsPath;
+
+        private DateTime LanguagesLastChangeTime;
+        private Dictionary<string, Language> Languages;
 
         public Arbiter()
         {
             LanguagesPath = CheckAndCreateDirectory("Languages");
+            LanguagesFilePath = Path.Combine(Directory.GetCurrentDirectory(), "languages.yaml");
+            if (!File.Exists(LanguagesFilePath))
+            {
+                Logger.Log($"Файл languages.yaml создан");
+                File.Create(LanguagesFilePath);
+            }
+            else
+            {
+                Logger.Log($"Файл languages.yaml существует");
+            }
+
             QueuePath = CheckAndCreateDirectory("Queue");
             ResultsPath = CheckAndCreateDirectory("Results");
+
+            Languages = new Dictionary<string, Language>();
+
+            DeserializerBuilder builder = new DeserializerBuilder();
+            Deserializer = builder.WithNamingConvention(new UnderscoredNamingConvention()).Build();
         }
 
         /// <summary>
@@ -54,7 +80,18 @@ namespace Arbiter
         /// <returns>Если языки не изменились, то возращает true</returns>
         private bool LanguagesAreUnchanged()
         {
-            return true;
+            bool areUnchanged = true;
+
+            var lastChange = File.GetLastWriteTime(LanguagesFilePath);
+            if (lastChange > LanguagesLastChangeTime)
+            {
+                areUnchanged = false;
+                Logger.Log("Конфигурация языков была измненена");
+                Languages = Language.Load(LanguagesFilePath, LanguagesPath);
+                LanguagesLastChangeTime = lastChange;
+            }
+
+            return areUnchanged;
         }
 
         /// <summary>

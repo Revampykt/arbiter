@@ -1,0 +1,4 @@
+gcc:
+  compilation: "g++ %c.cpp -o %c.exe"
+  execution: "%c.exe input.txt output.txt"
+  name: "GNU Compiler Collection C++"

@@ -22,7 +22,7 @@ namespace Arbiter
             {
                 WorkingDirectory = Path.Combine(Directory.GetCurrentDirectory(), "WorkingDirectory");
                 Logger.Initialization();
-                Logger.Warning("Не указана рабочая директория");
+                Logger.Warning($"Не указана рабочая директория, программа будет работать в директории {WorkingDirectory}");
             }
             else
             {
@@ -45,7 +45,7 @@ namespace Arbiter
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex.Message);
+                    Logger.Error($"Message: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 }
             }
         }
