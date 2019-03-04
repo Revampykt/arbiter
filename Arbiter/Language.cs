@@ -19,7 +19,8 @@ namespace Arbiter
             {
                 Arguments = fileName,
                 FileName = CompilationBatch,
-                WorkingDirectory = workingDir
+                WorkingDirectory = workingDir,
+                UseShellExecute = false
             };
 
             Process process = new Process

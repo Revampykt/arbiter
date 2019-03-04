@@ -122,10 +122,48 @@ namespace Arbiter
                 string newFileName = fileName.Replace(QueuePath, ResultsPath);
                 File.Move(fileName, newFileName);
 
-
+                ProcessSolution(newFileName);
             }
 
             return isEmpty;
+        }
+
+        /// <summary>
+        /// Обработка решения
+        /// </summary>
+        /// <param name="fileName">путь до файла решения</param>
+        private void ProcessSolution(string fileName)
+        {
+            string key = DefineCompiler(fileName);
+
+            if (key == "error")
+                return;
+
+            Languages[key].Compile(ResultsPath, fileName);
+        }
+
+
+
+        /// <summary>
+        /// Определение компилятора по расширению файла
+        /// </summary>
+        /// <param name="fileName">путь до файла</param>
+        /// <returns>возвращает ключ из словаря с языками</returns>
+        private string DefineCompiler(string fileName)
+        {
+            var splitted = fileName.Split('.');
+            switch (splitted[splitted.Length - 1])
+            {
+                case "cpp":
+                case "c":
+                    return "gcc";
+                case "cs":
+                    return "csc";
+                default:
+                    Logger.Error($"Неизвестный формат файла решения {fileName}");
+                    return "error";
+            }
+
         }
     }
 }
