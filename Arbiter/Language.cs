@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using YamlDotNet.Core;
 
@@ -12,9 +13,21 @@ namespace Arbiter
 
         public string CompilationBatch;
 
-        public void Compile()
+        public void Compile(string workingDir, string fileName)
         {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                Arguments = fileName,
+                FileName = CompilationBatch,
+                WorkingDirectory = workingDir
+            };
 
+            Process process = new Process
+            {
+                StartInfo = startInfo
+            };
+
+            process.Start();
         }
 
         public void Execute()
