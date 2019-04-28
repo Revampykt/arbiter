@@ -13,10 +13,14 @@ namespace Arbiter
         public static void Main(string[] args)
         {
             if (args.Length > 0)
+            {
                 WorkingDirectory = args[0];
+            }
 
             foreach (var a in args)
+            {
                 Console.WriteLine(a);
+            }
 
             if (string.IsNullOrEmpty(WorkingDirectory))
             {
