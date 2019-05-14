@@ -69,6 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Misc\EventArgs.cs" />
     <Compile Include="Source\Arbiter.cs" />
     <Compile Include="Source\Language.cs" />
     <Compile Include="Misc\Logger.cs" />

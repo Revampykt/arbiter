@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Arbiter.Misc;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using YamlDotNet.Core;
@@ -13,8 +15,20 @@ namespace Arbiter
 
         public string CompilationBatch;
 
-        public void Compile(string workingDir, string fileName)
+        public EventHandler<StringArgs> Compiled;
+
+        private string CurrentExecutableFileName;
+        private string CurrentWorkingDirectory;
+        public void CompileAndExecute(string workingDir, string fileName)
         {
+            Compile(workingDir, fileName);
+        }
+
+        private void Compile(string workingDir, string fileName)
+        {
+            CurrentWorkingDirectory = workingDir;
+            CurrentExecutableFileName = $"{fileName}.exe";
+
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 Arguments = fileName,
@@ -27,13 +41,50 @@ namespace Arbiter
             {
                 StartInfo = startInfo
             };
-
+            process.EnableRaisingEvents = true;
+            process.Exited += Compilation_Exited;
             process.Start();
+            process.WaitForExit();
         }
 
+        /// <summary>
+        /// Событие завершения процесса компиляции
+        /// </summary>
+        private void Compilation_Exited(object sender, EventArgs e)
+        {
+            Logger.Log("Исходный код скомпилирован");
+            Execute();
+        }
+
+        /// <summary>
+        /// Запуск исполняемого файла скомпилированного кода
+        /// </summary>
         public void Execute()
         {
+            Logger.Log($"Исполнение {CurrentExecutableFileName}");
 
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                Arguments = "",
+                FileName = CurrentExecutableFileName,
+                WorkingDirectory = CurrentWorkingDirectory,
+                UseShellExecute = false
+            };
+
+            Process process = new Process
+            {
+                StartInfo = startInfo
+            };
+
+            process.EnableRaisingEvents = true;
+            process.Exited += Execution_Exited;
+            process.Start();
+            process.WaitForExit();
+        }
+
+        private void Execution_Exited(object sender, EventArgs e)
+        {
+            Logger.Log("Исполнение завершено");
         }
 
         /// <summary>
@@ -75,6 +126,7 @@ namespace Arbiter
             {
                 string code = l.Key;
                 Language lang = l.Value;
+                lang.Name = l.Key;
                 lang.CreateBatch(code, languagesPath);
             }
 

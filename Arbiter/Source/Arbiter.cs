@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Arbiter.Misc;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using YamlDotNet.Serialization;
@@ -139,9 +140,8 @@ namespace Arbiter
             if (key == "error")
                 return;
 
-            Languages[key].Compile(ResultsPath, fileName);
+            Languages[key].CompileAndExecute(ResultsPath, fileName);
         }
-
 
 
         /// <summary>
