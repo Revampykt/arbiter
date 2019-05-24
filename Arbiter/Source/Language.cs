@@ -17,18 +17,8 @@ namespace Arbiter
 
         public EventHandler<StringArgs> Compiled;
 
-        private string CurrentExecutableFileName;
-        private string CurrentWorkingDirectory;
-        public void CompileAndExecute(string workingDir, string fileName)
+        public void Compile(string workingDir, string fileName)
         {
-            Compile(workingDir, fileName);
-        }
-
-        private void Compile(string workingDir, string fileName)
-        {
-            CurrentWorkingDirectory = workingDir;
-            CurrentExecutableFileName = $"{fileName}.exe";
-
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 Arguments = fileName,
@@ -41,50 +31,23 @@ namespace Arbiter
             {
                 StartInfo = startInfo
             };
-            process.EnableRaisingEvents = true;
-            process.Exited += Compilation_Exited;
             process.Start();
             process.WaitForExit();
-        }
-
-        /// <summary>
-        /// Событие завершения процесса компиляции
-        /// </summary>
-        private void Compilation_Exited(object sender, EventArgs e)
-        {
-            Logger.Log("Исходный код скомпилирован");
-            Execute();
+            Logger.Log("Процесс компиляции завершен");
         }
 
         /// <summary>
         /// Запуск исполняемого файла скомпилированного кода
         /// </summary>
-        public void Execute()
+        public void Execute(string workingDir, string fileName)
         {
-            Logger.Log($"Исполнение {CurrentExecutableFileName}");
+            uint memory = 0;
+            uint time = 0;
+            uint verdict = 0;
 
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                Arguments = "",
-                FileName = CurrentExecutableFileName,
-                WorkingDirectory = CurrentWorkingDirectory,
-                UseShellExecute = false
-            };
-
-            Process process = new Process
-            {
-                StartInfo = startInfo
-            };
-
-            process.EnableRaisingEvents = true;
-            process.Exited += Execution_Exited;
-            process.Start();
-            process.WaitForExit();
-        }
-
-        private void Execution_Exited(object sender, EventArgs e)
-        {
-            Logger.Log("Исполнение завершено");
+            //Invoker.InteractiveInputOutput(fileName, "", "", ref verdict, ref memory, ref time);
+            Invoker2.MesaureProcess(fileName, "", "", out memory, out time);
+            Logger.Log($"Процесс исполнения завершен.\nИспользованная память: {memory} bytes\nЗатраченное время: {time} ms");
         }
 
         /// <summary>

@@ -140,7 +140,11 @@ namespace Arbiter
             if (key == "error")
                 return;
 
-            Languages[key].CompileAndExecute(ResultsPath, fileName);
+            var language = Languages[key];
+
+            language.Compile(ResultsPath, fileName);
+
+            language.Execute(ResultsPath, $"{fileName}.exe");
         }
 
 
