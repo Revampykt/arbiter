@@ -1,27 +1,23 @@
 ---
 source: |-
   using System;
-
   class Program
   {
-      static void Main()
+      static void Main(string[] args)
       {
-          long mem1 = GC.GetTotalMemory(false);
-          {
-              // Allocate an array and make it unreachable.
-              int[] values = new int[50000];
-              values = null;
-          }
-          long mem2 = GC.GetTotalMemory(false);
-          {
-              // Collect garbage.
-              GC.Collect();
-          }
-          long mem3 = GC.GetTotalMemory(false);
-          {
-              Console.WriteLine(mem1);
-              Console.WriteLine(mem2);
-              Console.WriteLine(mem3);
-          }
+          long beforeMemory = GC.GetTotalMemory(false);
+
+          PerformSolution(args);
+
+          long afterMemory = GC.GetTotalMemory(false);
+
+          long usedMemory = afterMemory - beforeMemory;
+
+          Console.WriteLine($"UsedMemory : {usedMemory}");
+      }
+
+      private static void PerformSolution(string[] args)
+      {
+          //Место для вставки кода участника
       }
   }
