@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Misc\EventArgs.cs" />
     <Compile Include="Source\Arbiter.cs" />
+    <Compile Include="Source\Verdict.cs" />
     <Compile Include="Source\Invoker.cs" />
     <Compile Include="Source\Invoker2.cs" />
     <Compile Include="Source\Kernel32.cs" />
@@ -104,15 +105,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <None Include="Templates\CSharpTemplate.yaml">
+    <Content Include="Templates\CSharpTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\JavaTemplate.yaml">
+    </Content>
+    <Content Include="Templates\JavaTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\PythonTemplate.yaml">
+    </Content>
+    <Content Include="Templates\PythonTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

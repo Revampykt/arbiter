@@ -142,9 +142,16 @@ namespace Arbiter
 
             var language = Languages[key];
 
-            language.Compile(ResultsPath, fileName);
-
-            language.Execute(ResultsPath, $"{fileName}.exe");
+            if (key == "csc")
+            {
+                language.CompileCSharp(ResultsPath, fileName);
+                language.ExecuteCSharp(ResultsPath, $"{fileName}.exe");
+            }
+            else
+            {
+                language.CompileCCPP(ResultsPath, fileName);
+                language.ExecuteCCPP(ResultsPath, $"{fileName}.exe");
+            }
         }
 
 
@@ -159,6 +166,7 @@ namespace Arbiter
             switch (splitted[splitted.Length - 1])
             {
                 case "cpp":
+                    return "g++";
                 case "c":
                     return "gcc";
                 case "cs":

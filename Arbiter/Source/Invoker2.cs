@@ -60,7 +60,7 @@ namespace Arbiter
                 cb = (uint)Marshal.SizeOf(typeof(PROCESS_MEMORY_COUNTERS))
             };
 
-            bool getProcessMemoryInfoSuccess = PSAPI.GetProcessMemoryInfo(processInforamtion.hProcess, out pmc, pmc.cb);
+            bool getProcessMemoryInfoSuccess = PSAPI.K32GetProcessMemoryInfo(processInforamtion.hProcess, out pmc, pmc.cb);
 
             if (getProcessMemoryInfoSuccess)
             {
@@ -72,7 +72,7 @@ namespace Arbiter
                 Logger.Log("fail");
             }
 
-            memory = 0;
+            memory = pmc.PagefileUsage;
 
             Kernel32.CloseHandle(processInforamtion.hProcess);
             Kernel32.CloseHandle(hStdInput);

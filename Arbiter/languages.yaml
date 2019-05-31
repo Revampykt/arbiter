@@ -1,8 +1,12 @@
-gcc:
+g++:
   compilation: "g++ %1 -o %1.exe"
-  execution: "%1.exe input.txt output.txt"
+  execution: "%1.exe"
+  name: "GNU Compiler Collection C++"
+gcc:
+  compilation: "gcc %1 -o %1.exe"
+  execution: "%1.exe"
   name: "GNU Compiler Collection C++"
 csc:
-  compilation: "csc /out:%1.exe %1"
-  execution: "%1.exe input.txt output.txt"
+  compilation: "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe /out:%1.exe %1"
+  execution: "%1.exe"
   name: "Microsoft Visual C# Compiler"

@@ -8,19 +8,19 @@ namespace Arbiter
     {
         public uint cb;
         public uint PageFaultCount;
-        public int PeakWorkingSetSize;
-        public int WorkingSetSize;
-        public int QuotaPeakPagedPoolUsage;
-        public int QuotaPagedPoolUsage;
-        public int QuotaPeakNonPagedPoolUsage;
-        public int QuotaNonPagedPoolUsage;
-        public int PagefileUsage;
-        public int PeakPagefileUsage;
+        public uint PeakWorkingSetSize;
+        public uint WorkingSetSize;
+        public uint QuotaPeakPagedPoolUsage;
+        public uint QuotaPagedPoolUsage;
+        public uint QuotaPeakNonPagedPoolUsage;
+        public uint QuotaNonPagedPoolUsage;
+        public uint PagefileUsage;
+        public uint PeakPagefileUsage;
     }
 
     public class PSAPI
     {
-        [DllImport("psapi.dll", SetLastError = true)]
-        public static extern bool GetProcessMemoryInfo(IntPtr hProcess, out PROCESS_MEMORY_COUNTERS counters, uint size);
+        [DllImport("Kernel32.dll", SetLastError = true)]
+        public static extern bool K32GetProcessMemoryInfo(IntPtr hProcess, out PROCESS_MEMORY_COUNTERS counters, uint size);
     }
 }

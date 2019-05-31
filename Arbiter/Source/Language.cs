@@ -14,10 +14,11 @@ namespace Arbiter
         public string Compilation;
 
         public string CompilationBatch;
+        public string templateText;
 
         public EventHandler<StringArgs> Compiled;
 
-        public void Compile(string workingDir, string fileName)
+        public void CompileCCPP(string workingDir, string fileName)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
@@ -33,21 +34,122 @@ namespace Arbiter
             };
             process.Start();
             process.WaitForExit();
-            Logger.Log("Процесс компиляции завершен");
+            Logger.Log("Процесс компиляции C/C++ завершен");
         }
 
         /// <summary>
         /// Запуск исполняемого файла скомпилированного кода
         /// </summary>
-        public void Execute(string workingDir, string fileName)
+        public void ExecuteCCPP(string workingDir, string fileName)
         {
-            uint memory = 0;
-            uint time = 0;
-            uint verdict = 0;
+            //uint memory = 0;
+            //uint time = 0;
+            //uint verdict = 0;
 
-            //Invoker.InteractiveInputOutput(fileName, "", "", ref verdict, ref memory, ref time);
-            Invoker2.MesaureProcess(fileName, "", "", out memory, out time);
-            Logger.Log($"Процесс исполнения завершен.\nИспользованная память: {memory} bytes\nЗатраченное время: {time} ms");
+            ////Invoker.InteractiveInputOutput(fileName, "", "", ref verdict, ref memory, ref time);
+            //Invoker2.MesaureProcess(fileName, "", "", out memory, out time);
+            //Logger.Log($"Процесс исполнения завершен.\nИспользованная память: {memory} bytes\nЗатраченное время: {time} ms");
+
+            Verdict verdict = Verdict.None;
+
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                Arguments = "",
+                FileName = fileName,
+                WorkingDirectory = workingDir,
+                UseShellExecute = false
+            };
+
+            Process process = new Process
+            {
+                StartInfo = startInfo
+            };
+
+            long memory = 0;
+
+            var watch = Stopwatch.StartNew();
+
+            process.Start();
+
+            double timer = 0;
+
+            while (!process.HasExited)
+            {
+                memory = process.PagedMemorySize64;
+                if (watch.ElapsedMilliseconds > 10000)
+                {
+                    verdict = Verdict.TimeLimit;
+                    break;
+                }
+            }
+
+            watch.Stop();
+            
+            if (verdict != Verdict.TimeLimit)
+            {
+                if (memory >= 10000000)
+                    verdict = Verdict.MemoryLimit;
+            }
+
+            Logger.Log("Процесс выполнения C/C++ завершен " + memory + " " + watch.ElapsedMilliseconds);
+
+            if (verdict == Verdict.None)
+                verdict = Verdict.Accept;
+
+            WriteResult(fileName + ".res", memory, watch.ElapsedMilliseconds, verdict);
+        }
+
+        private void WriteResult(string fileName, long memory, double time, Verdict verdict)
+        {
+            File.WriteAllText(fileName, $"UsedMemory: {memory}\nElapsedTime: {time}\nVerdict: {verdict.ToString()}");
+        }
+
+        public void CompileCSharp(string workingDir, string fileName)
+        {
+            string code = File.ReadAllText(fileName);
+
+            var a = code.Split(new char[] { '{', '}' }, StringSplitOptions.RemoveEmptyEntries);
+
+            string newCode = templateText;
+
+            //newCode = newCode.Replace("//[USING]", a[0]);
+
+            string method = "";
+            foreach (var s in a)
+            {
+                if (s.Contains("static void Main") || s.Contains("class") || string.IsNullOrEmpty(s))
+                    continue;
+                method += s;
+            }
+
+            newCode = newCode.Replace("//[CODE]", method);
+
+            string newFileName = Path.Combine(workingDir, "ttt.cs"); 
+
+            File.WriteAllText(newFileName, newCode);
+
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                Arguments = newFileName,
+                FileName = CompilationBatch,
+                WorkingDirectory = workingDir,
+                UseShellExecute = false
+            };
+
+            Process process = new Process
+            {
+                StartInfo = startInfo
+            };
+            process.Start();
+            process.WaitForExit();
+            Logger.Log("Процесс компиляции C# завершен");
+        }
+
+        public void ExecuteCSharp(string workingDir, string fileName)
+        {
+            long memory = 0;
+
+            Logger.Log("Процесс выполнения C# завершен " + memory);
         }
 
         /// <summary>
@@ -91,6 +193,12 @@ namespace Arbiter
                 Language lang = l.Value;
                 lang.Name = l.Key;
                 lang.CreateBatch(code, languagesPath);
+
+                if (l.Key == "csc")
+                {
+                    var fileName = Path.Combine(Directory.GetCurrentDirectory(), "Templates\\CSharpTemplate.txt");
+                    lang.templateText = File.ReadAllText(fileName);
+                }
             }
 
             return result;
