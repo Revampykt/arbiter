@@ -10,3 +10,7 @@ csc:
   compilation: "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\csc.exe /out:%1.exe %1"
   execution: "%1.exe"
   name: "Microsoft Visual C# Compiler"
+py3:
+  compilation: ""
+  execution: "python %1"
+  name: "Python 3"
