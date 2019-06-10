@@ -1,0 +1,71 @@
+userName: Ivan
+realName: Ivan Ivanov
+results:
+  subtask0:
+    0:
+      verdict: OK
+      memoryUsed: 8192
+      elapsedTime: 0
+    1:
+      verdict: OK
+      memoryUsed: 8192
+      elapsedTime: 0
+    2:
+      verdict: OK
+      memoryUsed: 8192
+      elapsedTime: 0
+    3:
+      verdict: OK
+      memoryUsed: 8192
+      elapsedTime: 0
+    4:
+      verdict: OK
+      memoryUsed: 8192
+      elapsedTime: 0
+  subtask1:
+    0:
+      verdict: OK
+      memoryUsed: 8192
+      elapsedTime: 0
+    1:
+      verdict: OK
+      memoryUsed: 8192
+      elapsedTime: 0
+  subtask2:
+    0:
+      verdict: OK
+      memoryUsed: 8192
+      elapsedTime: 0
+preliminary: 
+total: 0
+language: C#
+source: >-
+  using System;
+
+  using System.IO;
+
+
+  class Program
+
+  {
+      public static void Main(string[] args)
+      {
+          int n;
+          int m;
+          int k;
+
+          string input = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "input.txt"));
+
+          var splitted = input.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+          n = Convert.ToInt32(splitted[0]);
+          m = Convert.ToInt32(splitted[1]);
+          k = Convert.ToInt32(splitted[2]);
+
+          int v = (n + m) * 2 * k;
+
+          Console.WriteLine(v);
+      }
+  }
+compilation: true
+time: 2019-06-10T20:26:25.9480000+09:00

@@ -193,12 +193,6 @@ namespace Arbiter
                 Language lang = l.Value;
                 lang.Name = l.Key;
                 lang.CreateBatch(code, languagesPath);
-
-                if (l.Key == "csc")
-                {
-                    var fileName = Path.Combine(Directory.GetCurrentDirectory(), "Templates\\CSharpTemplate.txt");
-                    lang.templateText = File.ReadAllText(fileName);
-                }
             }
 
             return result;
