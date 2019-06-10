@@ -78,23 +78,23 @@ namespace Arbiter
                 memory = process.PagedMemorySize64;
                 if (watch.ElapsedMilliseconds > 10000)
                 {
-                    verdict = Verdict.TimeLimit;
+                    verdict = Verdict.TL;
                     break;
                 }
             }
 
             watch.Stop();
             
-            if (verdict != Verdict.TimeLimit)
+            if (verdict != Verdict.TL)
             {
                 if (memory >= 10000000)
-                    verdict = Verdict.MemoryLimit;
+                    verdict = Verdict.ML;
             }
 
             Logger.Log("Процесс выполнения C/C++ завершен " + memory + " " + watch.ElapsedMilliseconds);
 
             if (verdict == Verdict.None)
-                verdict = Verdict.Accept;
+                verdict = Verdict.OK;
 
             WriteResult(fileName + ".res", memory, watch.ElapsedMilliseconds, verdict);
         }

@@ -1,7 +1,7 @@
 g++:
   compilation: "g++ %1 -o %1.exe"
   execution: "%1.exe"
-  name: "GNU Compiler Collection C++"
+  name: ""
 gcc:
   compilation: "gcc %1 -o %1.exe"
   execution: "%1.exe"

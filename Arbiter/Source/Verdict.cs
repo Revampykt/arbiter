@@ -3,13 +3,13 @@
     public enum Verdict
     {
         None,
-        Accept,
-        Wrong,
-        TimeLimit,
-        MemoryLimit,
-        IdleLimit,
-        CompilationError,
-        RuntimeError,
-        PresentationError
+        OK,
+        WA,
+        TL,
+        ML,
+        IL,
+        CE,
+        RE,
+        PE
     }
 }
