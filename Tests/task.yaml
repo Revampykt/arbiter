@@ -1,0 +1,23 @@
+name: Гулливер
+timeout: 2
+timeLimit: 1
+memoryLimit: 64
+inputFile: input.txt
+outputFile: output.txt
+preliminary: {}
+testSuites:
+  subtask1:
+    name: Подзадача 1
+    scoring: Partial
+    testScore: 10
+    results: full
+  subtask2:
+    name: Подзадача 2
+    scoring: Partial
+    testScore: 15
+    results: full
+  subtask3:
+    name: Подзадача 3
+    scoring: Partial
+    testScore: 20
+    results: full

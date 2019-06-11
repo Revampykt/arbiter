@@ -1,41 +1,41 @@
 userName: Ivan
 realName: Ivan Ivanov
 results:
-  subtask0:
-    0:
-      verdict: OK
-      memoryUsed: 8192
-      elapsedTime: 0
-    1:
-      verdict: OK
-      memoryUsed: 8192
-      elapsedTime: 0
-    2:
-      verdict: OK
-      memoryUsed: 8192
-      elapsedTime: 0
-    3:
-      verdict: OK
-      memoryUsed: 8192
-      elapsedTime: 0
-    4:
-      verdict: OK
-      memoryUsed: 8192
-      elapsedTime: 0
   subtask1:
-    0:
-      verdict: OK
-      memoryUsed: 8192
-      elapsedTime: 0
     1:
-      verdict: OK
-      memoryUsed: 8192
-      elapsedTime: 0
+      verdict: RE
+      memoryUsed: -621136
+      elapsedTime: 14
+    2:
+      verdict: RE
+      memoryUsed: -251128
+      elapsedTime: 12
+    3:
+      verdict: RE
+      memoryUsed: -248696
+      elapsedTime: 13
+    4:
+      verdict: RE
+      memoryUsed: -248760
+      elapsedTime: 11
+    5:
+      verdict: RE
+      memoryUsed: -248824
+      elapsedTime: 11
   subtask2:
-    0:
-      verdict: OK
-      memoryUsed: 8192
-      elapsedTime: 0
+    1:
+      verdict: RE
+      memoryUsed: -249000
+      elapsedTime: 11
+    2:
+      verdict: RE
+      memoryUsed: -248232
+      elapsedTime: 11
+  subtask3:
+    1:
+      verdict: RE
+      memoryUsed: -248360
+      elapsedTime: 11
 preliminary: 
 total: 0
 language: C#
@@ -56,15 +56,23 @@ source: >-
 
           string input = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "input.txt"));
 
+          int[] a = new int[5000000];
+          for (int i = 0; i < 5000000; i++)
+          a[i] = a[i]++;
+
           var splitted = input.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
           n = Convert.ToInt32(splitted[0]);
           m = Convert.ToInt32(splitted[1]);
           k = Convert.ToInt32(splitted[2]);
 
+          int q = 1;
+          int w = 0;
+          int e = q / w;
+
           int v = (n + m) * 2 * k;
 
-          Console.WriteLine(v);
+          File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "output.txt"), v.ToString());
       }
   }
 compilation: true

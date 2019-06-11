@@ -9,7 +9,7 @@ namespace Arbiter
         public string realName;
         public Dictionary<string, Dictionary<string, Result>> results;
         public Dictionary<string, string> preliminary;
-        public float total;
+        public int total;
         public string language;
         public string source;
         public bool compilation;

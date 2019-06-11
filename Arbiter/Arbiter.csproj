@@ -74,6 +74,7 @@
     <Compile Include="Misc\EventArgs.cs" />
     <Compile Include="Source\Arbiter.cs" />
     <Compile Include="Source\Solution.cs" />
+    <Compile Include="Source\Task.cs" />
     <Compile Include="Source\Verdict.cs" />
     <Compile Include="Source\Invoker.cs" />
     <Compile Include="Source\Invoker2.cs" />

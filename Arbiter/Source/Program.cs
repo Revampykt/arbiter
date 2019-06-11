@@ -34,6 +34,44 @@ namespace Arbiter
                 Logger.Initialization();
             }
 
+
+            //Task task = new Task();
+            //task.name = "Гулливер";
+            //task.timeout = 2f;
+            //task.timeLimit = 1f;
+            //task.memoryLimit = 64f;
+            //task.inputFile = "input.txt";
+            //task.outputFile = "output.txt";
+            //task.preliminary = new System.Collections.Generic.Dictionary<string, string>();
+            //task.testSuites = new System.Collections.Generic.Dictionary<string, Subtask>();
+
+            //Subtask st1 = new Subtask();
+            //st1.name = "Подзадача 1";
+            //st1.scoring = Scoring.Partial;
+            //st1.testScore = 10;
+            //st1.results = "full";
+
+            //Subtask st2 = new Subtask();
+            //st2.name = "Подзадача 2";
+            //st2.scoring = Scoring.Partial;
+            //st2.testScore = 15;
+            //st2.results = "full";
+
+            //Subtask st3 = new Subtask();
+            //st3.name = "Подзадача 3";
+            //st3.scoring = Scoring.Partial;
+            //st3.testScore = 20;
+            //st3.results = "full";
+
+            //task.testSuites.Add("subtask1", st1);
+            //task.testSuites.Add("subtask2", st2);
+            //task.testSuites.Add("subtask3", st3);
+
+            //var serializer = new SerializerBuilder().EmitDefaults().Build();
+            //var yaml = serializer.Serialize(task);
+            //File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "task.yaml"), yaml);
+
+
             Logger.Log("Арбитр запущен");
 
             Console.CancelKeyPress += Console_CancelKeyPress;
