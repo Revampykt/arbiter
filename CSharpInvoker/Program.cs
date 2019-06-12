@@ -17,7 +17,7 @@ namespace CSharpInvoker
     {
         static void Main(string[] args)
         {
-            if (args.Length != 1)
+            if (args.Length != 2)
                 return;
 
             string input = File.ReadAllText(args[0]);
@@ -50,7 +50,7 @@ namespace CSharpInvoker
 
             var type = instance.GetType();
 
-            string pathToTests = Path.Combine(Directory.GetCurrentDirectory(), "Tests");
+            string pathToTests = args[1];
             var subtasks = Directory.GetDirectories(pathToTests);
 
             var task = LoadTask(pathToTests);

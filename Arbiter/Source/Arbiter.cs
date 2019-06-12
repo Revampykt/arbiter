@@ -1,6 +1,4 @@
-﻿using Arbiter.Misc;
-using System;
-using System.Collections.Generic;
+﻿using System.Diagnostics;
 using System.IO;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -16,35 +14,20 @@ namespace Arbiter
 
         public static IDeserializer Deserializer;
 
-        private string LanguagesPath;
-        private string LanguagesFilePath;
         private string QueuePath;
         private string ResultsPath;
+        private string TestsPath;
 
-        private DateTime LanguagesLastChangeTime;
-        private Dictionary<string, Language> Languages;
+        private string CSharpInvokerEXE;
 
         public Arbiter()
         {
-            LanguagesPath = CheckAndCreateDirectory("Languages");
-            LanguagesFilePath = Path.Combine(Directory.GetCurrentDirectory(), "languages.yaml");
-            if (!File.Exists(LanguagesFilePath))
-            {
-                Logger.Log($"Файл languages.yaml создан");
-                File.Create(LanguagesFilePath);
-            }
-            else
-            {
-                Logger.Log($"Файл languages.yaml существует");
-            }
-
             QueuePath = CheckAndCreateDirectory("Queue");
             ResultsPath = CheckAndCreateDirectory("Results");
+            Deserializer = new DeserializerBuilder().WithNamingConvention(new CamelCaseNamingConvention()).Build();
 
-            Languages = new Dictionary<string, Language>();
-
-            DeserializerBuilder builder = new DeserializerBuilder();
-            Deserializer = builder.WithNamingConvention(new UnderscoredNamingConvention()).Build();
+            CSharpInvokerEXE = Path.Combine(Directory.GetCurrentDirectory(), "CSharpInvoker.exe");
+            TestsPath = Path.Combine(Directory.GetCurrentDirectory(), "Tests");
         }
 
         /// <summary>
@@ -72,36 +55,7 @@ namespace Arbiter
         /// </summary>
         public void Update()
         {
-            sleep = LanguagesAreUnchanged() && ProblemsAreUnchanged() && QueueIsEmpty();
-        }
-
-        /// <summary>
-        /// Проверка языков
-        /// </summary>
-        /// <returns>Если языки не изменились, то возращает true</returns>
-        private bool LanguagesAreUnchanged()
-        {
-            bool areUnchanged = true;
-
-            var lastChange = File.GetLastWriteTime(LanguagesFilePath);
-            if (lastChange > LanguagesLastChangeTime)
-            {
-                areUnchanged = false;
-                Logger.Log("Конфигурация языков была измненена");
-                Languages = Language.Load(LanguagesFilePath, LanguagesPath);
-                LanguagesLastChangeTime = lastChange;
-            }
-
-            return areUnchanged;
-        }
-
-        /// <summary>
-        /// Проверка задач
-        /// </summary>
-        /// <returns>Если задачи не изменились, то возвращает true</returns>
-        private bool ProblemsAreUnchanged()
-        {
-            return true;
+            sleep = QueueIsEmpty();
         }
 
         /// <summary>
@@ -114,16 +68,16 @@ namespace Arbiter
 
             var queue = Directory.GetFiles(QueuePath);
 
-            foreach (var fileName in queue)
+            foreach (var solutionFile in queue)
             {
-                Logger.Log($"Обработка файла: {fileName}");
+                Logger.Log($"Обработка файла: {solutionFile}");
 
                 isEmpty = false;
 
-                string newFileName = fileName.Replace(QueuePath, ResultsPath);
-                File.Move(fileName, newFileName);
+                string newSolutionFile = solutionFile.Replace(QueuePath, ResultsPath);
+                File.Move(solutionFile, newSolutionFile);
 
-                ProcessSolution(newFileName);
+                ProcessSolution(newSolutionFile);
             }
 
             return isEmpty;
@@ -132,49 +86,63 @@ namespace Arbiter
         /// <summary>
         /// Обработка решения
         /// </summary>
-        /// <param name="fileName">путь до файла решения</param>
-        private void ProcessSolution(string fileName)
+        /// <param name="solution">путь до файла решения</param>
+        private void ProcessSolution(string solutionFile)
         {
-            string key = DefineCompiler(fileName);
+            var input = File.ReadAllText(solutionFile);
 
-            if (key == "error")
-                return;
+            var solution = Deserializer.Deserialize<Solution>(input);
 
-            var language = Languages[key];
-
-            if (key == "csc")
+            switch (solution.language)
             {
-                language.CompileCSharp(ResultsPath, fileName);
-                language.ExecuteCSharp(ResultsPath, $"{fileName}.exe");
-            }
-            else
-            {
-                language.CompileCCPP(ResultsPath, fileName);
-                language.ExecuteCCPP(ResultsPath, $"{fileName}.exe");
+                case "C#":
+                    ProcessCSharpSolution(solutionFile);
+                    break;
+                case "C":
+                    ProcessCSolution(solutionFile);
+                    break;
+                case "C++":
+                    ProcessCPPSolution(solutionFile);
+                    break;
+                case "Python":
+                    ProcessPythonSolution(solutionFile);
+                    break;
             }
         }
 
-
-        /// <summary>
-        /// Определение компилятора по расширению файла
-        /// </summary>
-        /// <param name="fileName">путь до файла</param>
-        /// <returns>возвращает ключ из словаря с языками</returns>
-        private string DefineCompiler(string fileName)
+        private void ProcessCSharpSolution(string solutionFile)
         {
-            var splitted = fileName.Split('.');
-            switch (splitted[splitted.Length - 1])
+            ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                case "cpp":
-                    return "g++";
-                case "c":
-                    return "gcc";
-                case "cs":
-                    return "csc";
-                default:
-                    Logger.Error($"Неизвестный формат файла решения {fileName}");
-                    return "error";
-            }
+                Arguments = solutionFile + " " + TestsPath,
+                FileName = CSharpInvokerEXE,
+                WorkingDirectory = ResultsPath,
+                UseShellExecute = false
+            };
+
+            Process process = new Process
+            {
+                StartInfo = startInfo
+            };
+
+            process.Start();
+            process.WaitForExit();
+
+            Logger.Log($"Файл проверен: {solutionFile}");
+        }
+
+        private void ProcessCSolution(string solutionFile)
+        {
+
+        }
+
+        private void ProcessCPPSolution(string solutionFile)
+        {
+
+        }
+
+        private void ProcessPythonSolution(string solutionFile)
+        {
 
         }
     }
